@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import DetailView, ListView, TemplateView
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
-from django.views.generic.edit import CreativeView
+from django.views.generic.edit import CreativeView, UptadeView
 from django.urls import reverse_lazy
 
 # Create your views here.
@@ -70,6 +70,12 @@ def get_post(request, post_id):
     return response
 
 class PostCreateView(LoginRequiredMixin, CreateView):
+    def get_context_data(self, **kwargs):
+        context = super(PostCreateView, self).get_context_data(**kwargs)
+        context['form_title'] = 'Criando um post'
+
+        return context
+    
     model = Post
     template_name = 'post/post_form.html'
     fields = ('body_text', )
@@ -120,3 +126,19 @@ class PostListView(ListView):
 class SobreTemplateView(TemplateView):
     template_name = 'post/sobre.html'
 
+class PostUpdateView(LoginRequiredMixin, UpdateView):
+    def get_context_data(self, **kwargs):
+        context = super(PostUpdateView, self).get_context_data(**kwargs)
+        context['form_title'] = 'Editando o post'
+        return context
+    
+    model = Post
+    template_name = 'post/post_form.html'
+    success_url = reverse_lazy('posts_all')
+    form_class = PostModelForm
+    success_message = 'Postagem salva com sucesso.'
+    # implementa o método que conclui a ação com sucesso
+
+    def form_valid(self, form):
+        messages.success(self.request, self.success_message)
+        return super(PostUpdateView, self).form_valid(form)
