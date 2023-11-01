@@ -16,6 +16,12 @@
         </a>
         {% for post in posts %}
         <article>
+
+            {% if post.autor %}
+            <span>Autor: {{ post.autor.username}}</span>
+            {% else %}
+            <span>Autor: Desconhecido</span>
+            {% endif %} <br>
             <h2>Em: {{ post.pub_date|date:"d / m / Y" }}</h2>
             <p>{{ post.body_text }}</p>
         </article>

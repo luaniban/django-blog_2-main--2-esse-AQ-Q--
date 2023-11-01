@@ -140,6 +140,7 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
     # implementa o método que conclui a ação com sucesso
 
     def form_valid(self, form):
+        form.instance.autor = self.request.user
         messages.success(self.request, self.success_message)
         return super(PostUpdateView, self).form_valid(form)
     
